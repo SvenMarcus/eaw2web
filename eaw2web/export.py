@@ -7,10 +7,7 @@ from eaw2web.gameobjecttypes import Faction, GenericGameObject, WithIcon
 from eaw2web.icon import IconDirectories
 from eaw2web.modstack import ModStack
 from eaw2web.text import parse_to_text_dict
-from eaw2web.xml.collectors import (
-    DataCollector,
-)
-from eaw2web.xml.parser import collect_from_files
+from eaw2web.xml.collectors import DataCollector, collect_from_files
 
 
 def should_include(object: GenericGameObject, excluded_name_fragments: set[str]):

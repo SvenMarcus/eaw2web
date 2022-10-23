@@ -63,3 +63,16 @@ class FactionCollector:
         tree = ElementTree(file=full_path)
 
         return [parse_faction(child, text_dict) for child in tree.getroot()]
+
+
+def collect_from_files(
+    files: list[str],
+    collector: DataCollector[GameObjectType],
+    mod_stack: ModStack,
+    text_dict: dict[str, str],
+) -> list[GameObjectType]:
+    return [
+        obj
+        for file in files
+        for obj in collector(mod_stack, file.replace("\\", "/"), text_dict)
+    ]

@@ -8,7 +8,7 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 
 from eaw2web import config
 from eaw2web.cli.progressreporters import RichProgressReporter
-from eaw2web.cli.wrappers import into_reporting_collector
+from eaw2web.cli.wrappers import reporting_collector
 from eaw2web.modstack import ModStack
 from eaw2web.xml.collectors import (
     FactionCollector,
@@ -30,22 +30,25 @@ def export(config_file: Path) -> None:
 
     cfg = config.parse(config_file)
     stack = ModStack(cfg.includes.modstack)
+    progress_bar, file_progress = progress_bars()
+    reporter = RichProgressReporter(progress_bar, file_progress)
+
+    gameobject_collector = reporting_collector(GameObjectCollector(parsers()), reporter)
+    faction_collector = reporting_collector(FactionCollector(), reporter)
+
+    with live_console(progress_bar, file_progress):
+        total_files = len(stack.gameobjectfiles) + len(stack.factionfiles)
+        progress_bar.add_task("Progress", total=total_files)
+        _export(cfg, stack, gameobject_collector, faction_collector)
+
+
+def progress_bars():
     progress_bar = Progress()
     file_progress = Progress(
         SpinnerColumn(), TextColumn("{task.description}"), transient=True
     )
 
-    reporter = RichProgressReporter(progress_bar, file_progress)
-
-    gameobject_collector = into_reporting_collector(
-        GameObjectCollector(parsers()), reporter
-    )
-    faction_collector = into_reporting_collector(FactionCollector(), reporter)
-
-    with live_console(progress_bar, file_progress):
-        total_files = len(stack.gameobjectfiles) + len(stack.factionfiles)
-        print(progress_bar.add_task("Progress", total=total_files))
-        _export(cfg, stack, gameobject_collector, faction_collector)
+    return progress_bar, file_progress
 
 
 def live_console(progress_bar: Progress, file_progress: Progress):

@@ -1,6 +1,6 @@
 from typing import Protocol
 from eaw2web.modstack import ModStack
-import eaw2web.xml.parser as parser
+from eaw2web.xml.collectors import DataCollector, GameObjectType
 
 
 class ReportProgess(Protocol):
@@ -11,15 +11,15 @@ class ReportProgess(Protocol):
         ...
 
 
-def into_reporting_collector(
-    collector: parser.DataCollector[parser.GameObjectType],
+def reporting_collector(
+    collector: DataCollector[GameObjectType],
     progress: ReportProgess,
-) -> parser.DataCollector[parser.GameObjectType]:
+) -> DataCollector[GameObjectType]:
     def _collector(
         mod_stack: ModStack,
         filename: str,
         text_dict: dict[str, str],
-    ) -> list[parser.GameObjectType]:
+    ) -> list[GameObjectType]:
         progress.begin(filename)
         result = collector(mod_stack, filename, text_dict)
         progress.finish()
