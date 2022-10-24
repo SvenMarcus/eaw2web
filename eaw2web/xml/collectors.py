@@ -1,7 +1,7 @@
 from typing import Any, Generic, Optional, Protocol, TypeVar, cast
 from xml.etree.ElementTree import Element, ElementTree
 
-from eaw2web.faction import parse_faction
+from eaw2web.xml.faction import parse_faction
 from eaw2web.gameobjecttypes import Faction, GenericGameObject
 from eaw2web.modstack import ModStack
 

@@ -6,7 +6,7 @@ from rich.live import Live
 from rich.panel import Panel
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
-from eaw2web import config
+from eaw2web import config, load
 from eaw2web.cli.progressreporters import RichProgressReporter
 from eaw2web.cli.wrappers import reporting_collector
 from eaw2web.modstack import ModStack
@@ -39,7 +39,11 @@ def export(config_file: Path) -> None:
     with live_console(progress_bar, file_progress):
         total_files = len(stack.gameobjectfiles) + len(stack.factionfiles)
         progress_bar.add_task("Progress", total=total_files)
-        _export(cfg, stack, gameobject_collector, faction_collector)
+        objects = load.load(cfg, stack, gameobject_collector, stack.gameobjectfiles)
+        _export(cfg, "gameobjects.json", objects)
+
+        factions = load.load(cfg, stack, faction_collector, stack.factionfiles)
+        _export(cfg, "factions.json", factions)
 
 
 def progress_bars():
