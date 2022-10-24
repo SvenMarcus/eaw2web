@@ -37,3 +37,16 @@ def parse_to_text_dict(path: str):
             text_dict[t[0]] = t[1]
 
     return text_dict
+
+
+class Encyclopedia(dict[str, str]):
+    def __init__(self, text_files: list[str]) -> None:
+        super().__init__(self._parse_all_text_files(text_files))
+        self.text_files = text_files
+
+    def _parse_all_text_files(self, files: list[str]) -> dict[str, str]:
+        text_dict: dict[str, str] = {}
+        for csv in files:
+            text_dict.update(parse_to_text_dict(csv))
+
+        return text_dict
