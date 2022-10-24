@@ -1,15 +1,21 @@
 from rich.progress import Progress, TaskID
+from rich.spinner import Spinner
 
 
 class RichProgressReporter:
-    def __init__(self, progress_bar: Progress, current_file: Progress) -> None:
+    def __init__(self, progress_bar: Progress, task_id: TaskID = TaskID(0)) -> None:
         self.bar = progress_bar
-        self.file = current_file
-        self.task_id = TaskID(-1)
+        self.task_id = task_id
 
     def begin(self, filename: str) -> None:
-        self.task_id = self.file.add_task(f"Processing {filename}")
+        self.bar.log(self.spinner(filename))
+
+    def spinner(self, filename: str) -> Spinner:
+        return Spinner(
+            "dots",
+            f"Processing {filename}",
+            style="blue",
+        )
 
     def finish(self) -> None:
-        self.file.advance(self.task_id, 100)
-        self.bar.advance(TaskID(0), 1)
+        self.bar.advance(self.task_id, 1)

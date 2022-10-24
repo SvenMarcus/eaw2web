@@ -1,18 +1,19 @@
-from typing import Any, Generic, Optional, Protocol, TypeVar, cast
+from typing import Any, Optional, Protocol, cast
 from xml.etree.ElementTree import Element, ElementTree
 
-from eaw2web.xml.faction import parse_faction
-from eaw2web.gameobjecttypes import Faction, GenericGameObject
+from eaw2web.gameobjecttypes import GenericGameObject
 from eaw2web.modstack import ModStack
 
 
-GameObjectType = TypeVar("GameObjectType")
+class DataCollector(Protocol):
+    def collect_all(
+        self, files: list[str], text_dict: dict[str, str]
+    ) -> list[GenericGameObject]:
+        ...
 
-
-class DataCollector(Protocol, Generic[GameObjectType]):
-    def __call__(
-        self, mod_stack: ModStack, filename: str, text_dict: dict[str, str]
-    ) -> list[GameObjectType]:
+    def collect_from(
+        self, filename: str, text_dict: dict[str, str]
+    ) -> list[GenericGameObject]:
         ...
 
 
@@ -24,17 +25,19 @@ class GameObjectParser(Protocol):
 
 
 class GameObjectCollector:
-    def __init__(self, parsers: dict[str, GameObjectParser]) -> None:
+    def __init__(
+        self, mod_stack: ModStack, parsers: dict[str, GameObjectParser]
+    ) -> None:
+        self.mod_stack = mod_stack
         self.parsers = parsers
 
-    def __call__(
+    def collect_from(
         self,
-        mod_stack: ModStack,
         filename: str,
         text_dict: dict[str, str],
     ) -> list[GenericGameObject]:
 
-        full_path = mod_stack.find_topmost_xml(filename)
+        full_path = self.mod_stack.find_topmost_xml(filename)
         tree = ElementTree(file=full_path)
 
         def not_none(obj: Any) -> bool:
@@ -51,28 +54,13 @@ class GameObjectCollector:
             list(filter(not_none, gameobjects)),
         )
 
-
-class FactionCollector:
-    def __call__(
+    def collect_all(
         self,
-        mod_stack: ModStack,
-        filename: str,
+        files: list[str],
         text_dict: dict[str, str],
-    ) -> list[Faction]:
-        full_path = mod_stack.find_topmost_xml(filename)
-        tree = ElementTree(file=full_path)
-
-        return [parse_faction(child, text_dict) for child in tree.getroot()]
-
-
-def collect_from_files(
-    files: list[str],
-    collector: DataCollector[GameObjectType],
-    mod_stack: ModStack,
-    text_dict: dict[str, str],
-) -> list[GameObjectType]:
-    return [
-        obj
-        for file in files
-        for obj in collector(mod_stack, file.replace("\\", "/"), text_dict)
-    ]
+    ) -> list[GenericGameObject]:
+        return [
+            obj
+            for file in files
+            for obj in self.collect_from(file.replace("\\", "/"), text_dict)
+        ]

@@ -67,7 +67,7 @@ def get_or_raise(
 
     value = parser[key]
     if not isinstance(value, expected_type):
-        raise MissingConfigError(key)
+        raise ConfigTypeError(key, expected_type)
 
     return value
 
