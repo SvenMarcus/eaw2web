@@ -6,6 +6,7 @@ from xml.etree.ElementTree import ElementTree
 
 GameObjectFiles = "GameObjectFiles.xml"
 FactionFiles = "FactionFiles.xml"
+TradeRouteFiles = "TradeRouteFiles.xml"
 
 
 class ModStack:
@@ -31,6 +32,18 @@ class ModStack:
     @cached_property
     def gameobjectfiles(self) -> list[str]:
         return _get_filelist_from(self, GameObjectFiles)
+
+    @cached_property
+    def traderoutefiles(self) -> list[str]:
+        return _get_filelist_from(self, TradeRouteFiles)
+
+    @property
+    def filelists(self) -> dict[str, list[str]]:
+        return {
+            FactionFiles: self.factionfiles,
+            GameObjectFiles: self.gameobjectfiles,
+            TradeRouteFiles: self.traderoutefiles,
+        }
 
 
 def _get_filelist_from(mod_stack: ModStack, file: str) -> list[str]:

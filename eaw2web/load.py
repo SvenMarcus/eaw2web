@@ -1,10 +1,10 @@
 from eaw2web.config import Config
-from eaw2web.gameobjecttypes import GenericGameObject
+from eaw2web.gameobjecttypes import BaseObject
 from eaw2web.text import Encyclopedia
 from eaw2web.xml.collectors import DataCollector
 
 
-def should_include(object: GenericGameObject, excluded_name_fragments: set[str]):
+def should_include(object: BaseObject, excluded_name_fragments: set[str]):
     return all(fragment not in object.xml_id for fragment in excluded_name_fragments)
 
 
@@ -12,7 +12,7 @@ def load(
     config: Config,
     collector: DataCollector,
     files: list[str],
-) -> list[GenericGameObject]:
+) -> list[BaseObject]:
     text_dict = Encyclopedia(config.includes.textcsv)
     return [
         object

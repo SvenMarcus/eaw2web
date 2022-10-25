@@ -1,7 +1,7 @@
 from typing import Any, Optional, Protocol, cast
 from xml.etree.ElementTree import Element, ElementTree
 
-from eaw2web.gameobjecttypes import GenericGameObject
+from eaw2web.gameobjecttypes import BaseObject
 from eaw2web.modstack import ModStack
 from eaw2web.text import Encyclopedia
 
@@ -9,19 +9,19 @@ from eaw2web.text import Encyclopedia
 class DataCollector(Protocol):
     def collect_all(
         self, files: list[str], encyclopedia: Encyclopedia
-    ) -> list[GenericGameObject]:
+    ) -> list[BaseObject]:
         ...
 
     def collect_from(
         self, filename: str, encyclopedia: Encyclopedia
-    ) -> list[GenericGameObject]:
+    ) -> list[BaseObject]:
         ...
 
 
 class GameObjectParser(Protocol):
     def __call__(
         self, child: Element, encyclopedia: Encyclopedia
-    ) -> Optional[GenericGameObject]:
+    ) -> Optional[BaseObject]:
         pass
 
 
@@ -34,7 +34,7 @@ class GameObjectCollector:
 
     def collect_from(
         self, filename: str, encyclopedia: Encyclopedia
-    ) -> list[GenericGameObject]:
+    ) -> list[BaseObject]:
 
         full_path = self.mod_stack.find_topmost_xml(filename)
         tree = ElementTree(file=full_path)
@@ -49,13 +49,13 @@ class GameObjectCollector:
         ]
 
         return cast(
-            list[GenericGameObject],
+            list[BaseObject],
             list(filter(not_none, gameobjects)),
         )
 
     def collect_all(
         self, files: list[str], encyclopedia: Encyclopedia
-    ) -> list[GenericGameObject]:
+    ) -> list[BaseObject]:
         return [
             obj
             for file in files

@@ -1,7 +1,7 @@
 from xml.etree import ElementTree as et
 
 from eaw2web.gameobjecttypes import Planet
-from eaw2web.text import Encyclopedia
+from eaw2web.text import Encyclopedia, from_csv_line
 from eaw2web.xml.generic import parse_generic_game_object
 from eaw2web.xml.text import text_or_empty
 
@@ -30,4 +30,7 @@ def parse_planet(child: et.Element, encyclopedia: Encyclopedia):
         if text_entry:
             tooltips.append(f"{split_tag[-1]}: {text_entry}")
 
-    return Planet(**game_object.dict(), tooltips=tooltips)
+    coordinates = text_or_empty(child.find("Galactic_Position")) or "0,0,0"
+    coordinates = tuple([float(x) for x in from_csv_line(coordinates)])
+
+    return Planet(**game_object.dict(), tooltips=tooltips, coordinates=coordinates)

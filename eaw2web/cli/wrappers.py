@@ -1,5 +1,5 @@
 from typing import Protocol
-from eaw2web.gameobjecttypes import GenericGameObject
+from eaw2web.gameobjecttypes import BaseObject
 from eaw2web.text import Encyclopedia
 from eaw2web.xml.collectors import DataCollector
 
@@ -17,7 +17,7 @@ def reporting_collector(collector: DataCollector, report: ReportProgess):
 
     def collect_from(
         filename: str, encyclopedia: Encyclopedia
-    ) -> list[GenericGameObject]:
+    ) -> list[BaseObject]:
         report.begin(filename)
         result = original(filename, encyclopedia)
         report.finish()

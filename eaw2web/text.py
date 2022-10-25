@@ -1,11 +1,11 @@
 def _parse_to_text_dict(path: str):
     with open(path, mode="r") as f:
-        kv_pairs = [_splitline(line) for line in f]
+        kv_pairs = [from_csv_line(line, maxsplit=1) for line in f]
         return dict(kv_pairs)
 
 
-def _splitline(line: str) -> tuple[str, str]:
-    return tuple(line.strip().split(",", maxsplit=1))
+def from_csv_line(line: str, *, maxsplit: int = -1) -> tuple[str, str]:
+    return tuple(line.strip().split(",", maxsplit=maxsplit))
 
 
 def _parse_all_text_files(files: list[str]) -> dict[str, str]:
