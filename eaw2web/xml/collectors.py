@@ -3,23 +3,24 @@ from xml.etree.ElementTree import Element, ElementTree
 
 from eaw2web.gameobjecttypes import GenericGameObject
 from eaw2web.modstack import ModStack
+from eaw2web.text import Encyclopedia
 
 
 class DataCollector(Protocol):
     def collect_all(
-        self, files: list[str], text_dict: dict[str, str]
+        self, files: list[str], encyclopedia: Encyclopedia
     ) -> list[GenericGameObject]:
         ...
 
     def collect_from(
-        self, filename: str, text_dict: dict[str, str]
+        self, filename: str, encyclopedia: Encyclopedia
     ) -> list[GenericGameObject]:
         ...
 
 
 class GameObjectParser(Protocol):
     def __call__(
-        self, child: Element, text_dict: dict[str, str]
+        self, child: Element, encyclopedia: Encyclopedia
     ) -> Optional[GenericGameObject]:
         pass
 
@@ -32,9 +33,7 @@ class GameObjectCollector:
         self.parsers = parsers
 
     def collect_from(
-        self,
-        filename: str,
-        text_dict: dict[str, str],
+        self, filename: str, encyclopedia: Encyclopedia
     ) -> list[GenericGameObject]:
 
         full_path = self.mod_stack.find_topmost_xml(filename)
@@ -44,7 +43,7 @@ class GameObjectCollector:
             return obj is not None
 
         gameobjects = [
-            self.parsers[child.tag](child, text_dict)
+            self.parsers[child.tag](child, encyclopedia)
             for child in tree.getroot()
             if child.tag in self.parsers
         ]
@@ -55,12 +54,10 @@ class GameObjectCollector:
         )
 
     def collect_all(
-        self,
-        files: list[str],
-        text_dict: dict[str, str],
+        self, files: list[str], encyclopedia: Encyclopedia
     ) -> list[GenericGameObject]:
         return [
             obj
             for file in files
-            for obj in self.collect_from(file.replace("\\", "/"), text_dict)
+            for obj in self.collect_from(file.replace("\\", "/"), encyclopedia)
         ]
