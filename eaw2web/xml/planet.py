@@ -1,7 +1,9 @@
 from xml.etree import ElementTree as et
 
 from eaw2web.gameobjecttypes import Planet
-from eaw2web.xml.generic import parse_generic_game_object, text_entry_from_tag
+from eaw2web.text import Encyclopedia
+from eaw2web.xml.generic import parse_generic_game_object
+from eaw2web.xml.text import text_or_empty
 
 DESCRIPTION_TAGS = [
     "Describe_History",
@@ -12,8 +14,8 @@ DESCRIPTION_TAGS = [
 ]
 
 
-def parse_planet(child: et.Element, text_dict: dict[str, str]):
-    game_object = parse_generic_game_object(child, text_dict)
+def parse_planet(child: et.Element, encyclopedia: Encyclopedia):
+    game_object = parse_generic_game_object(child, encyclopedia)
     if not game_object:
         return None
 
@@ -24,7 +26,7 @@ def parse_planet(child: et.Element, text_dict: dict[str, str]):
             continue
 
         split_tag = tag.split("_")
-        text_entry = text_entry_from_tag(descriptor, text_dict)
+        text_entry = encyclopedia.get_text(text_or_empty(descriptor))
         if text_entry:
             tooltips.append(f"{split_tag[-1]}: {text_entry}")
 
