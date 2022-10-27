@@ -11,6 +11,7 @@ from eaw2web.xml.collectors import (
     GameObjectCollector,
     GameObjectParser,
 )
+from eaw2web.xml.campaign import parse_campaign
 from eaw2web.xml.faction import parse_faction
 from eaw2web.xml.planet import parse_planet
 from eaw2web.xml.traderoutes import parse_traderoute
@@ -48,6 +49,7 @@ def output_name(filelist_name: str) -> str:
 
 def parsers() -> dict[str, GameObjectParser]:
     return {
+        "Campaign": parse_campaign,
         "Planet": parse_planet,
         "TradeRoute": parse_traderoute,
         "Faction": parse_faction,

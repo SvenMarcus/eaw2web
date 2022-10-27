@@ -4,8 +4,9 @@ from typing import Generator
 from xml.etree.ElementTree import ElementTree
 
 
-GameObjectFiles = "GameObjectFiles.xml"
+CampaignFiles = "CampaignFiles.xml"
 FactionFiles = "FactionFiles.xml"
+GameObjectFiles = "GameObjectFiles.xml"
 TradeRouteFiles = "TradeRouteFiles.xml"
 
 
@@ -37,9 +38,14 @@ class ModStack:
     def traderoutefiles(self) -> list[str]:
         return _get_filelist_from(self, TradeRouteFiles)
 
+    @cached_property
+    def campaignfiles(self) -> list[str]:
+        return _get_filelist_from(self, CampaignFiles)
+
     @property
     def filelists(self) -> dict[str, list[str]]:
         return {
+            CampaignFiles: self.campaignfiles,
             FactionFiles: self.factionfiles,
             GameObjectFiles: self.gameobjectfiles,
             TradeRouteFiles: self.traderoutefiles,

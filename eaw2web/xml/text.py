@@ -4,7 +4,7 @@ from xml.etree.ElementTree import Element
 from eaw2web.text import Encyclopedia
 
 
-def text_entry_from_tag(tag: Element, text_dict: Encyclopedia):
+def text_entry_from_tag(tag: Optional[Element], text_dict: Encyclopedia):
     return text_dict.get_text(text_or_empty(tag))
 
 

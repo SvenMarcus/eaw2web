@@ -6,9 +6,16 @@ class BaseObject(BaseModel):
     xml_id: str
 
 
-class GenericGameObject(BaseObject):
-    text: str
+class VariantType(BaseModel):
     variant_of: str
+
+
+class WithText(BaseModel):
+    text: str
+
+
+class GenericGameObject(BaseObject, WithText, VariantType):
+    pass
 
 
 class WithIcon(BaseModel):
@@ -33,5 +40,12 @@ class TradeRoute(BaseObject):
     point_b: str
 
 
-class Faction(GenericGameObject, WithIcon):
+class Faction(BaseObject, WithText, WithIcon):
     pass
+
+
+class Campaign(BaseObject, WithText):
+    conquest_set: str
+    planets: list[str]
+    traderoutes: list[str]
+    description: str

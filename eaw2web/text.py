@@ -1,11 +1,10 @@
+from typing import Iterable
+
+
 def _parse_to_text_dict(path: str):
     with open(path, mode="r") as f:
         kv_pairs = [from_csv_line(line, maxsplit=1) for line in f]
         return dict(kv_pairs)
-
-
-def from_csv_line(line: str, *, maxsplit: int = -1) -> tuple[str, str]:
-    return tuple(line.strip().split(",", maxsplit=maxsplit))
 
 
 def _parse_all_text_files(files: list[str]) -> dict[str, str]:
@@ -14,6 +13,18 @@ def _parse_all_text_files(files: list[str]) -> dict[str, str]:
         text_dict.update(_parse_to_text_dict(csv))
 
     return text_dict
+
+
+def from_csv_line(line: str, *, maxsplit: int = -1) -> tuple[str, ...]:
+    return tuple(line.strip().split(",", maxsplit=maxsplit))
+
+
+def preserve_newlines(text: str) -> str:
+    return text.replace("\\n", "\n")
+
+
+def strip_entries(split_text: Iterable[str]) -> list[str]:
+    return [entry.strip() for entry in split_text]
 
 
 class Encyclopedia(dict[str, str]):

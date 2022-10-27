@@ -1,3 +1,4 @@
+from typing import Optional
 from rich.progress import Progress, TaskID
 from rich.spinner import Spinner
 
@@ -17,5 +18,7 @@ class RichProgressReporter:
             style="blue",
         )
 
-    def finish(self) -> None:
+    def finish(self, error: Optional[Exception] = None) -> None:
+        if error:
+            self.bar.log(f"[red]{error}[/red]")
         self.bar.advance(self.task_id, 1)
