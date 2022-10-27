@@ -12,7 +12,7 @@ def text_or_empty(tag: Optional[Element]) -> str:
     if tag is None:
         return ""
 
-    return tag.text or ""
+    return (tag.text or "").strip()
 
 
 def collect_tooltips(child: Element, text_dict: Encyclopedia) -> list[str]:

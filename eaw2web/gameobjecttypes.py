@@ -46,6 +46,7 @@ class Faction(BaseObject, WithText, WithIcon):
 
 class Campaign(BaseObject, WithText):
     conquest_set: str
+    active_player: str
     planets: list[str]
     traderoutes: list[str]
     description: str
