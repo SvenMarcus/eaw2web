@@ -41,7 +41,7 @@ class TradeRoute(BaseObject):
 
 
 class Faction(BaseObject, WithText, WithIcon):
-    pass
+    is_playable: bool
 
 
 class Campaign(BaseObject, WithText):

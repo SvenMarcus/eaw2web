@@ -30,7 +30,7 @@ def parse_planet(child: et.Element, encyclopedia: Encyclopedia):
         if text_entry:
             tooltips.append(f"{split_tag[-1]}: {text_entry}")
 
-    coordinates = text_or_empty(child.find("Galactic_Position")) or "0,0,0"
-    coordinates = tuple([float(x) for x in from_csv_line(coordinates)])
+    coordinates_str = text_or_empty(child.find("Galactic_Position")) or "0,0,0"
+    coordinates = tuple([float(x) for x in from_csv_line(coordinates_str)])
 
     return Planet(**game_object.dict(), tooltips=tooltips, coordinates=coordinates)

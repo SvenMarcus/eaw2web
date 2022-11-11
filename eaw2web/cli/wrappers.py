@@ -27,5 +27,5 @@ def reporting_collector(collector: DataCollector, report: ReportProgess):
         report.finish(error)
         return result
 
-    collector.collect_from = collect_from
+    setattr(collector, "collect_from", collect_from)
     return collector
