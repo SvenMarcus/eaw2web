@@ -1,3 +1,4 @@
+from typing import cast
 from xml.etree import ElementTree as et
 
 from eaw2web.gameobjecttypes import Planet
@@ -32,5 +33,6 @@ def parse_planet(child: et.Element, encyclopedia: Encyclopedia):
 
     coordinates_str = text_or_empty(child.find("Galactic_Position")) or "0,0,0"
     coordinates = tuple([float(x) for x in from_csv_line(coordinates_str)])
+    coordinates = cast(tuple[float, float, float], coordinates)
 
     return Planet(**game_object.dict(), tooltips=tooltips, coordinates=coordinates)

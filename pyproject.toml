@@ -1,2 +1,36 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["pdm-pep517>=1.0"]
+build-backend = "pdm.pep517.api"
+
+
+[tool.pdm]
+
+[project]
+name = "eaw2web"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Sven Marcus", email = "s.marcus@outlook.de"},
+]
+dependencies = [
+    "Pillow>=9.4.0",
+    "pydantic>=1.10.5",
+    "typer[all]>=0.7.0",
+]
+requires-python = ">=3.10"
+readme = "README.md"
+license = {text = "MIT"}
+
+[project.optional-dependencies]
+dev = [
+    "mypy>=1.1.1",
+    "black>=23.1.0",
+    "ruff>=0.0.254",
+    "types-Pillow>=9.4.0.17",
+]
+
+[tool.mypy]
+plugins = "pydantic.mypy"
+
+[tool.mypy-PIL]
+ignore_missing_imports = true
