@@ -12,7 +12,7 @@ class ReportProgess(Protocol):
         ...
 
 
-def reporting_collector(collector: DataCollector, report: ReportProgess):
+def reporting_collector(collector: DataCollector, report: ReportProgess) -> DataCollector:
     original = collector.collect_from
 
     def collect_from(filename: str, encyclopedia: Encyclopedia) -> list[BaseObject]:

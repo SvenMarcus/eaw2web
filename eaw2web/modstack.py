@@ -10,6 +10,24 @@ GameObjectFiles = "GameObjectFiles.xml"
 TradeRouteFiles = "TradeRouteFiles.xml"
 
 
+class StackFilePath:
+    def __init__(self, stack_item_path: Path, file_path: Path) -> None:
+        self._stack_item_path = stack_item_path
+        self._file_path = file_path
+
+    def full_path(self) -> Path:
+        return self._file_path
+
+    def stack_item_root(self) -> Path:
+        return self._stack_item_path
+
+    def from_root(self) -> Path:
+        return Path(self._stack_item_path.stem) / self.relative_to_root()
+
+    def relative_to_root(self) -> Path:
+        return self._file_path.relative_to(self._stack_item_path)
+
+
 class ModStack:
     def __init__(self, mod_stack: list[str]) -> None:
         self._mod_stack = mod_stack
@@ -18,11 +36,11 @@ class ModStack:
         for mod in reversed(self._mod_stack):
             yield mod
 
-    def find_topmost_xml(self, xml_name: str) -> str:
+    def find_topmost_xml(self, xml_name: str) -> StackFilePath:
         for stack_item in reversed(self._mod_stack):
             full_path = Path(stack_item) / "Data" / "XML" / xml_name
             if full_path.exists():
-                return str(full_path)
+                return StackFilePath(Path(stack_item), full_path)
 
         raise FileNotFoundError(f"Could not find {xml_name}")
 
@@ -54,6 +72,6 @@ class ModStack:
 
 def _get_filelist_from(mod_stack: ModStack, file: str) -> list[str]:
     filepath = mod_stack.find_topmost_xml(file)
-    tree = ElementTree(file=filepath)
+    tree = ElementTree(file=filepath.full_path())
     root = tree.getroot()
     return [file.text for file in root.findall("File") if file.text]

@@ -17,7 +17,7 @@ class GalacticConquestSet(BaseModel):
 
 
 def transform_to_gc_sets(campaigns: list[Campaign]) -> list[GalacticConquestSet]:
-    sets = groupby(campaigns, lambda key: key.conquest_set)
+    sets = groupby(campaigns, lambda key: key.menu_settings.conquest_set)
     return [
         GalacticConquestSet(
             setname=setname,

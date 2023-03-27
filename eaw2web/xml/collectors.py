@@ -1,3 +1,4 @@
+from pathlib import Path, PurePath
 from typing import Any, Optional, Protocol, cast
 from xml.etree.ElementTree import Element, ElementTree
 
@@ -26,7 +27,7 @@ class DataCollector(Protocol):
 
 class GameObjectParser(Protocol):
     def __call__(
-        self, child: Element, encyclopedia: Encyclopedia
+        self, file: Path, child: Element, encyclopedia: Encyclopedia
     ) -> Optional[BaseObject]:
         pass
 
@@ -54,14 +55,14 @@ class GameObjectCollector:
     def collect_from(
         self, filename: str, encyclopedia: Encyclopedia
     ) -> list[BaseObject]:
-        full_path = self.mod_stack.find_topmost_xml(filename)
-        tree = ElementTree(file=full_path)
+        stack_file = self.mod_stack.find_topmost_xml(filename)
+        tree = ElementTree(file=stack_file.full_path())
 
         def not_none(obj: Any) -> bool:
             return obj is not None
 
         gameobjects = [
-            self.parsers[child.tag](child, encyclopedia)
+            self.parsers[child.tag](stack_file.from_root(), child, encyclopedia)
             for child in tree.getroot()
             if child.tag in self.parsers
         ]

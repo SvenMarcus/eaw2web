@@ -11,9 +11,7 @@ from eaw2web.gameobjecttypes import Campaign, Faction, Planet, TradeRoute, Unit
 from eaw2web.modstack import ModStack
 from eaw2web.pipeline import Pipeline
 from eaw2web.transformers.campaignsets import GalacticConquestSet, transform_to_gc_sets
-from eaw2web.xml.collectors import (
-    GameObjectCollector,
-)
+from eaw2web.xml.collectors import GameObjectCollector
 
 app = typer.Typer()
 
@@ -48,6 +46,7 @@ def export(config_file: Path) -> None:
 def pipelines() -> list[Pipeline[Any, Any]]:
     return [
         Pipeline(Campaign, GalacticConquestSet, [transform_to_gc_sets]),
+        Pipeline(Campaign, Campaign, []),
         Pipeline(Planet, Planet, []),
         Pipeline(TradeRoute, TradeRoute, []),
         Pipeline(Faction, Faction, []),
@@ -59,5 +58,5 @@ def output_name(object_typename: str) -> str:
     return object_typename.lower() + "s.json"
 
 
-def main():
+def main() -> None:
     app()

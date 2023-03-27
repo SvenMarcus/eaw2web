@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import cast
 from xml.etree import ElementTree as et
 
@@ -15,8 +16,8 @@ DESCRIPTION_TAGS = [
 ]
 
 
-def parse_planet(child: et.Element, encyclopedia: Encyclopedia):
-    game_object = parse_generic_game_object(child, encyclopedia)
+def parse_planet(file: Path, child: et.Element, encyclopedia: Encyclopedia) -> Planet | None:
+    game_object = parse_generic_game_object(file, child, encyclopedia)
     if not game_object:
         return None
 

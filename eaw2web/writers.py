@@ -17,6 +17,6 @@ class IntoDict(Protocol):
 
 
 def write_json(data: Iterable[IntoDict], path: Path) -> None:
-    out = json.dumps([o.dict() for o in data], indent=4)
+    out = json.dumps([o.dict() for o in data], indent=4, default=lambda v: str(v))
     with path.open("w") as f:
         f.write(out)

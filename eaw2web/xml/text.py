@@ -1,10 +1,10 @@
-from typing import Optional
+from typing import Iterable, Optional
 from xml.etree.ElementTree import Element
 
 from eaw2web.text import Encyclopedia
 
 
-def text_entry_from_tag(tag: Optional[Element], text_dict: Encyclopedia):
+def text_entry_from_tag(tag: Optional[Element], text_dict: Encyclopedia) -> str:
     return text_dict.get_text(text_or_empty(tag))
 
 
@@ -25,3 +25,7 @@ def collect_tooltips(child: Element, text_dict: Encyclopedia) -> list[str]:
 
     clean_text_content = tooltips_tag.text.strip()
     return [text_dict.get_text(tt) for tt in clean_text_content.split()]
+
+
+def collect_texts(elements: Iterable[Element]) -> list[str]:
+    return [element.text for element in elements if element.text]

@@ -4,7 +4,7 @@ from eaw2web.text import Encyclopedia
 from eaw2web.xml.collectors import DataCollector
 
 
-def should_include(object: BaseObject, excluded_name_fragments: set[str]):
+def should_include(object: BaseObject, excluded_name_fragments: set[str]) -> bool:
     return all(fragment not in object.xml_id for fragment in excluded_name_fragments)
 
 

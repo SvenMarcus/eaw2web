@@ -2,7 +2,7 @@ from typing import Iterable, TypeGuard
 from eaw2web.typing import Pair
 
 
-def _parse_to_text_dict(path: str):
+def _parse_to_text_dict(path: str) -> dict[str, str]:
     def is_pair(_tuple: tuple[str, ...]) -> TypeGuard[Pair[str, str]]:
         return len(_tuple) == 2
 
