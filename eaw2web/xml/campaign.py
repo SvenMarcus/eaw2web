@@ -5,10 +5,11 @@ from xml.etree.ElementTree import Element
 
 from eaw2web.gameobjecttypes import (
     BaseObject,
-    CameraSettings,
+    CampaignCameraSettings,
     Campaign,
     CampaignMenuSettings,
-    PlayerSettings,
+    CampaignMetaSettings,
+    CampaignPlayerSettings,
     StartingForce,
 )
 from eaw2web.text import Encyclopedia, from_csv_line, preserve_newlines, strip_entries
@@ -33,6 +34,7 @@ def parse_campaign(
         player_settings=_parse_player_settings(child),
         camera_settings=_parse_camera_settings(child),
         menu_settings=_parse_menu_settings(child),
+        meta_settings=_parse_meta_settings(child),
         starting_forces=_parse_starting_forces(child),
     )
 
@@ -59,7 +61,7 @@ _tags_to_settings = {
 _hardcoded_player_names = ["Empire", "Rebel", "Underworld"]
 
 
-def _parse_player_settings(child: Element) -> list[PlayerSettings]:
+def _parse_player_settings(child: Element) -> list[CampaignPlayerSettings]:
     xml_settings = XmlPlayerSettings()
     generic_story_names = child.find("Story_Name")
 
@@ -96,8 +98,8 @@ def _parse_starting_forces(child: Element) -> list[StartingForce]:
     ]
 
 
-def _parse_camera_settings(child: Element) -> CameraSettings:
-    return CameraSettings(
+def _parse_camera_settings(child: Element) -> CampaignCameraSettings:
+    return CampaignCameraSettings(
         shift=(
             float(child.findtext("Camera_Shift_X") or 0),
             float(child.findtext("Camera_Shift_Y") or 0),
@@ -108,14 +110,22 @@ def _parse_camera_settings(child: Element) -> CameraSettings:
 
 def _parse_menu_settings(child: Element) -> CampaignMenuSettings:
     return CampaignMenuSettings(
-        conquest_set=text_or_empty(child.find("Campaign_Set")),
         sort_order=int(child.findtext("Sort_Order") or 0),
         is_listed=bool(child.findtext("Is_Listed") or True),
         supports_custom_settings=bool(
             child.findtext("Supports_Custom_Settings") or False
         ),
-        tutorial=bool(child.findtext("Tutorial") or False),
         show_completed_tab=bool(child.findtext("Show_Completed_Tab") or True),
+    )
+
+
+def _parse_meta_settings(child: Element) -> CampaignMetaSettings:
+    return CampaignMetaSettings(
+        conquest_set=text_or_empty(child.find("Campaign_Set")),
+        story_campaign=bool(child.findtext("Is_Story_Campaign") or False),
+        tutorial=bool(child.findtext("Tutorial") or False),
+        planet_auto_reveal=bool(child.findtext("Planet_Auto_Reveal") or True),
+        autoresolve_allowed=bool(child.findtext("Is_Autoresolve_Allowed") or True),
     )
 
 
@@ -137,8 +147,8 @@ class XmlPlayerSettings:
             player, setting_value, *_ = strip_entries(text.split(","))
             self.insert_setting(player, Setting(setting_name, setting_value))
 
-    def to_player_settings(self) -> list[PlayerSettings]:
+    def to_player_settings(self) -> list[CampaignPlayerSettings]:
         return [
-            PlayerSettings(player_name=player, **self._settings_by_player[player])  # type: ignore
+            CampaignPlayerSettings(player_name=player, **self._settings_by_player[player])  # type: ignore
             for player in self._settings_by_player
         ]

@@ -47,7 +47,7 @@ class Faction(BaseObject, WithText, WithIcon):
     is_playable: bool
 
 
-class PlayerSettings(BaseModel):
+class CampaignPlayerSettings(BaseModel):
     player_name: str
     ai_player_name: str | None = None
     home_location: str | None = None
@@ -65,17 +65,23 @@ class StartingForce(BaseModel):
 
 
 class CampaignMenuSettings(BaseModel):
-    conquest_set: str
     sort_order: int
-    tutorial: bool
     is_listed: bool
     supports_custom_settings: bool
     show_completed_tab: bool
 
 
-class CameraSettings(BaseModel):
+class CampaignCameraSettings(BaseModel):
     shift: tuple[float, float]
     distance: float
+
+
+class CampaignMetaSettings(BaseModel):
+    conquest_set: str
+    tutorial: bool
+    story_campaign: bool
+    planet_auto_reveal: bool
+    autoresolve_allowed: bool
 
 
 class Campaign(BaseObject, WithText):
@@ -84,6 +90,7 @@ class Campaign(BaseObject, WithText):
     traderoutes: list[str]
     description: str
     starting_forces: list[StartingForce]
-    player_settings: list[PlayerSettings]
-    camera_settings: CameraSettings
+    player_settings: list[CampaignPlayerSettings]
+    meta_settings: CampaignMetaSettings
+    camera_settings: CampaignCameraSettings
     menu_settings: CampaignMenuSettings
