@@ -16,6 +16,7 @@ dependencies = [
     "Pillow>=9.4.0",
     "pydantic>=1.10.5",
     "typer[all]>=0.7.0",
+    "Jinja2>=3.1.2",
 ]
 requires-python = ">=3.10"
 readme = "README.md"

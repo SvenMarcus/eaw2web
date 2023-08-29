@@ -1,0 +1,5 @@
+{
+  "include": ["eaw2web"],
+  "venv": ".",
+  "venvPath": ".venv"
+}

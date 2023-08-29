@@ -1,12 +1,25 @@
-from typing import Any, Callable, Generic, Iterable, Type, TypeGuard, TypeVar, cast
+from typing import (
+    Any,
+    Callable,
+    Generic,
+    Iterable,
+    Protocol,
+    Type,
+    TypeGuard,
+    TypeVar,
+    cast,
+)
 
 from pydantic import BaseModel
 
-from eaw2web.config import Config
-from eaw2web.export import export
 from eaw2web.typing import GameObjectType
 
-PipelineResult = TypeVar("PipelineResult", bound=BaseModel)
+PipelineResult = TypeVar("PipelineResult", bound=BaseModel, contravariant=True)
+
+
+class Exporter(Protocol, Generic[PipelineResult]):
+    def __call__(self, objects: Iterable[PipelineResult]) -> None:
+        ...
 
 
 class Pipeline(Generic[GameObjectType, PipelineResult]):
@@ -37,5 +50,5 @@ class Pipeline(Generic[GameObjectType, PipelineResult]):
 
         return cast(list[PipelineResult], transformed)
 
-    def export(self, config: Config, filename: str) -> None:
-        export(config, filename, self.run())
+    def export(self, exporter: Exporter[PipelineResult]) -> None:
+        exporter(self.run())

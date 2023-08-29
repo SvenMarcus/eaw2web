@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Campaigns>
+    {% for campaign in campaigns -%}
+    <Campaign Name="{{ campaign.xml_id }}">
+        <Campaign_Set>{{ campaign.meta_settings.conquest_set }}</Campaign_Set>
+        <Sort_Order>{{ campaign.menu_settings.sort_order }}</Sort_Order>
+        <Is_Listed>{{ campaign.menu_settings.is_listed }}</Is_Listed>
+        <Supports_Custom_Settings>{{ campaign.menu_settings.supports_custom_settings }}</Supports_Custom_Settings>
+        <Show_Completed_Tab>{{ campaign.menu_settings.show_completed_tab }}</Show_Completed_Tab>
+        <Text_ID>{{ campaign.text }}</Text_ID>
+        <Description_Text>{{ campaign.description }}</Description_Text>
+
+        <Camera_Shift_X>{{ campaign.camera_settings.shift[0] }}</Camera_Shift_X>
+        <Camera_Shift_Y>{{ campaign.camera_settings.shift[1] }}</Camera_Shift_Y>
+        <Camera_Distance>{{ campaign.camera_settings.distance }}</Camera_Distance>
+
+        <Locations>
+            {% for planet in campaign.planets -%}
+            {{planet}},
+            {% endfor -%}
+        </Locations>
+
+        <Trade_Routes>
+            {% for traderoute in campaign.traderoutes -%}
+            {% if traderoute -%}
+            {{traderoute}},
+            {% endif -%}
+            {% endfor -%}
+        </Trade_Routes>
+
+        <Starting_Active_Player>{{ campaign.active_player }}</Starting_Active_Player>
+
+        {% for setting in campaign.player_settings -%}
+        <AI_Player_Control>{{ setting.player_name }}, {{ setting.ai_player_name }}</AI_Player_Control>
+        <Markup_Filename>{{ setting.player_name }}, {{ setting.markup_filename }}</Markup_Filename>
+        <Starting_Credits>{{ setting.player_name }}, {{ setting.starting_credits }}</Starting_Credits>
+        {% if setting.starting_tech_level -%}
+        <Starting_Tech_Level>{{ setting.player_name }}, {{ setting.starting_tech_level }}</Starting_Tech_Level>
+        {% endif -%}
+        {% if setting.max_tech_level -%}
+        <Max_Tech_Level>{{ setting.player_name }}, {{ setting.max_tech_level }}</Max_Tech_Level>
+        {% endif -%}
+        {% endfor -%}
+
+        <Story_Name>
+        {% for setting in campaign.player_settings -%}
+        {% if setting.story_name -%}
+            {{ setting.player_name }}, {{ setting.story_name }},
+        {% endif -%}
+        {% endfor -%}
+        </Story_Name>
+
+        <Human_Victory_Conditions>Galactic_All_Planets_Controlled</Human_Victory_Conditions>
+        <AI_Victory_Conditions>Galactic_All_Planets_Controlled</AI_Victory_Conditions>
+
+        {% for force in campaign.starting_forces -%}
+        <Starting_Forces>{{ force.player_name }}, {{ force.location_name }}, {{ force.type_name }}</Starting_Forces>
+        {% endfor %}
+
+    </Campaign>
+    {% endfor %}
+</Campaigns>

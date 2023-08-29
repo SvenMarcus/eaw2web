@@ -34,8 +34,20 @@ class Unit(GenericGameObject, WithIcon, WithTooltips):
     affiliation: list[str]
 
 
+class BuildingSlots:
+    land: int
+    space: int
+
+
+class PlanetAbilityInformation(WithText, WithIcon):
+    pass
+
+
 class Planet(GenericGameObject, WithTooltips):
     coordinates: tuple[float, float, float]
+    max_starbase: int
+    ability_info: PlanetAbilityInformation
+    building_slots: BuildingSlots
 
 
 class TradeRoute(BaseObject):
