@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import cast
 from xml.etree import ElementTree as et
 
-from eaw2web.gameobjecttypes import Planet, PlanetAbilityInformation
+from eaw2web.gameobjecttypes import Planet, PlanetAbilityInformation, TextEntry
 from eaw2web.text import Encyclopedia, from_csv_line
 from eaw2web.xml.generic import parse_generic_game_object
 from eaw2web.xml.text import text_or_empty
@@ -32,18 +32,17 @@ def parse_planet(
     )
 
 
-def parse_tooltips(child: et.Element, encyclopedia: Encyclopedia) -> list[str]:
-    tooltips: list[str] = []
+def parse_tooltips(child: et.Element, encyclopedia: Encyclopedia) -> list[TextEntry]:
+    tooltips: list[TextEntry] = []
 
     for tag in DESCRIPTION_TAGS:
         descriptor = child.find(tag)
         if descriptor is None:
             continue
 
-        split_tag = tag.split("_")
         text_entry = encyclopedia.get_text(text_or_empty(descriptor))
         if text_entry:
-            tooltips.append(f"{split_tag[-1]}: {text_entry}")
+            tooltips.append(text_entry)
 
     return tooltips
 
@@ -58,6 +57,8 @@ def parse_ability_information(
     child: et.Element, encyclopedia: Encyclopedia
 ) -> PlanetAbilityInformation:
     return PlanetAbilityInformation(
-        text=encyclopedia.get_text(text_or_empty(child.find("Planet_Ability_Name"))),
+        textentry=encyclopedia.get_text(
+            text_or_empty(child.find("Planet_Ability_Name"))
+        ),
         icon=text_or_empty(child.find("Planet_Ability_Icon")),
     )

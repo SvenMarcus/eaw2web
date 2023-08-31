@@ -1,4 +1,5 @@
 from typing import Iterable, TypeGuard
+from eaw2web.gameobjecttypes import TextEntry
 from eaw2web.typing import Pair
 
 
@@ -27,8 +28,11 @@ def from_csv_line(line: str, *, maxsplit: int = -1) -> tuple[str, ...]:
     return tuple(line.strip().split(",", maxsplit=maxsplit))
 
 
-def preserve_newlines(text: str) -> str:
-    return text.replace("\\n", "\n")
+def preserve_newlines(textentry: TextEntry) -> TextEntry:
+    return TextEntry(
+        key=textentry.key,
+        text=textentry.text.replace("\\n", "\n"),
+    )
 
 
 def strip_entries(split_text: Iterable[str]) -> list[str]:
@@ -40,6 +44,6 @@ class Encyclopedia(dict[str, str]):
         super().__init__(_parse_all_text_files(text_files))
         self.text_files = text_files
 
-    def get_text(self, text_id: str) -> str:
+    def get_text(self, text_id: str) -> TextEntry:
         cleaned_text_content = text_id.upper().strip()
-        return self.get(cleaned_text_content, "")
+        return TextEntry(key=text_id, text=self.get(cleaned_text_content, ""))

@@ -13,8 +13,13 @@ class VariantType(BaseModel):
     variant_of: str
 
 
-class WithText(BaseModel):
+class TextEntry(BaseModel):
+    key: str
     text: str
+
+
+class WithText(BaseModel):
+    textentry: TextEntry
 
 
 class GenericGameObject(BaseObject, WithText, VariantType):
@@ -26,7 +31,7 @@ class WithIcon(BaseModel):
 
 
 class WithTooltips(BaseModel):
-    tooltips: list[str]
+    tooltips: list[TextEntry]
 
 
 class Unit(GenericGameObject, WithIcon, WithTooltips):
@@ -100,7 +105,7 @@ class Campaign(BaseObject, WithText):
     active_player: str
     planets: list[str]
     traderoutes: list[str]
-    description: str
+    description: TextEntry
     starting_forces: list[StartingForce]
     player_settings: list[CampaignPlayerSettings]
     meta_settings: CampaignMetaSettings

@@ -1,10 +1,11 @@
 from typing import Iterable, Optional
 from xml.etree.ElementTree import Element
+from eaw2web.gameobjecttypes import TextEntry
 
 from eaw2web.text import Encyclopedia
 
 
-def text_entry_from_tag(tag: Optional[Element], text_dict: Encyclopedia) -> str:
+def text_entry_from_tag(tag: Optional[Element], text_dict: Encyclopedia) -> TextEntry:
     return text_dict.get_text(text_or_empty(tag))
 
 
@@ -15,7 +16,7 @@ def text_or_empty(tag: Optional[Element]) -> str:
     return (tag.text or "").strip()
 
 
-def collect_tooltips(child: Element, text_dict: Encyclopedia) -> list[str]:
+def collect_tooltips(child: Element, text_dict: Encyclopedia) -> list[TextEntry]:
     tooltips_tag = child.find("Encyclopedia_Text")
     if tooltips_tag is None:
         return []

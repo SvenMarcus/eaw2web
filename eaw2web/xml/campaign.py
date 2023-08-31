@@ -23,7 +23,7 @@ def parse_campaign(
     return Campaign(
         **parse_base_object(file, child).dict(),
         active_player=text_or_empty(child.find("Starting_Active_Player")),
-        text=text_entry_from_tag(child.find("Text_ID"), encyclopedia),
+        textentry=text_entry_from_tag(child.find("Text_ID"), encyclopedia),
         description=preserve_newlines(
             text_entry_from_tag(child.find("Description_Text"), encyclopedia)
         ),
