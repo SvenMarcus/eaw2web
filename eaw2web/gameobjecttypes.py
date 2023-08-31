@@ -39,7 +39,7 @@ class Unit(GenericGameObject, WithIcon, WithTooltips):
     affiliation: list[str]
 
 
-class BuildingSlots:
+class BuildingSlots(BaseModel):
     land: int
     space: int
 

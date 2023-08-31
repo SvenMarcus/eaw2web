@@ -2,7 +2,12 @@ from pathlib import Path
 from typing import cast
 from xml.etree import ElementTree as et
 
-from eaw2web.gameobjecttypes import Planet, PlanetAbilityInformation, TextEntry
+from eaw2web.gameobjecttypes import (
+    BuildingSlots,
+    Planet,
+    PlanetAbilityInformation,
+    TextEntry,
+)
 from eaw2web.text import Encyclopedia, from_csv_line
 from eaw2web.xml.generic import parse_generic_game_object
 from eaw2web.xml.text import text_or_empty
@@ -29,6 +34,7 @@ def parse_planet(
         tooltips=parse_tooltips(child, encyclopedia),
         ability_info=parse_ability_information(child, encyclopedia),
         max_starbase=int(text_or_empty(child.find("Max_Space_Base")) or 0),
+        building_slots=BuildingSlots(land=0, space=0),
     )
 
 
