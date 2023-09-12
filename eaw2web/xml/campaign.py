@@ -149,6 +149,9 @@ class XmlPlayerSettings:
 
     def to_player_settings(self) -> list[CampaignPlayerSettings]:
         return [
-            CampaignPlayerSettings(player_name=player, **self._settings_by_player[player])  # type: ignore
+            CampaignPlayerSettings(
+                player_name=player,
+                **self._settings_by_player[player],  # type: ignore
+            )
             for player in self._settings_by_player
         ]

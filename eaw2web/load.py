@@ -15,7 +15,7 @@ def load(
 ) -> list[BaseObject]:
     text_dict = Encyclopedia(config.includes.textcsv)
     return [
-        object
-        for object in collector.collect_all(files, text_dict)
-        if should_include(object, config.excludes.fragments)
+        obj
+        for obj in collector.collect_all(files, text_dict)
+        if should_include(obj, config.excludes.fragments)
     ]

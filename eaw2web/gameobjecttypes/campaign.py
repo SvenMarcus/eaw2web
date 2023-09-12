@@ -1,67 +1,10 @@
-from pathlib import Path
-
 from pydantic import BaseModel
-
-
-class BaseObject(BaseModel):
-    file: Path
-    game_object_type: str
-    xml_id: str
-
-
-class VariantType(BaseModel):
-    variant_of: str
-
-
-class TextEntry(BaseModel):
-    key: str
-    text: str
-
-
-class WithText(BaseModel):
-    textentry: TextEntry
-
-
-class GenericGameObject(BaseObject, WithText, VariantType):
-    pass
-
-
-class WithIcon(BaseModel):
-    icon: str
-
-
-class WithTooltips(BaseModel):
-    tooltips: list[TextEntry]
-
-
-class Unit(GenericGameObject, WithIcon, WithTooltips):
-    tech_level: str
-    affiliation: list[str]
-
-
-class BuildingSlots(BaseModel):
-    land: int
-    space: int
-
-
-class PlanetAbilityInformation(WithText, WithIcon):
-    pass
-
-
-class Planet(GenericGameObject, WithTooltips):
-    coordinates: tuple[float, float, float]
-    max_starbase: int
-    ability_info: PlanetAbilityInformation
-    building_slots: BuildingSlots
+from eaw2web.gameobjecttypes.atomics import BaseObject, TextEntry, WithText
 
 
 class TradeRoute(BaseObject):
     point_a: str
     point_b: str
-
-
-class Faction(BaseObject, WithText, WithIcon):
-    is_playable: bool
 
 
 class CampaignPlayerSettings(BaseModel):
