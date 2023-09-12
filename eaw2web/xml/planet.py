@@ -68,7 +68,7 @@ def parse_tactical_descriptions(
 
 def parse_coordinates(child: et.Element) -> tuple[float, float, float]:
     coordinates_str = text_or_empty(child.find("Galactic_Position")) or "0,0,0"
-    coordinates = tuple([float(x) for x in from_csv_line(coordinates_str)])[:3]
+    coordinates = tuple(map(float, from_csv_line(coordinates_str)))[:3]
     return cast(tuple[float, float, float], coordinates)
 
 
