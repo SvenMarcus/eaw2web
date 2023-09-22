@@ -1,4 +1,4 @@
-from pathlib import Path, PurePath
+from pathlib import Path
 from xml.etree.ElementTree import Element
 from eaw2web.gameobjecttypes import BaseObject
 

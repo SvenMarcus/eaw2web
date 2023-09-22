@@ -9,7 +9,7 @@ class BaseObject(BaseModel):
 
 
 class VariantType(BaseModel):
-    variant_of: str
+    variant_of: BaseObject | None
 
 
 class TextEntry(BaseModel):

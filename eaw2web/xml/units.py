@@ -1,26 +1,31 @@
 from pathlib import Path
+from typing import cast
 from xml.etree.ElementTree import Element
 
 from eaw2web.gameobjecttypes import Unit
+from eaw2web.gameobjecttypes.atomics import BaseObject
 from eaw2web.text import Encyclopedia
 from eaw2web.xml.generic import parse_generic_game_object
 from eaw2web.xml.icon import icon_name
-from eaw2web.xml.text import collect_tooltips, text_or_empty
+from eaw2web.xml.tags import TagParser, allow_missing
+from eaw2web.xml.textentries import collect_tooltips
 
 
-def parse_unit_object(file: Path, child: Element, encyclopedia: Encyclopedia) -> Unit:
+def parse_unit_object(
+    file: Path,
+    child: Element,
+    encyclopedia: Encyclopedia,
+    variant: BaseObject | None = None,
+) -> Unit:
+    parser = TagParser(child)
     return Unit(
-        **parse_generic_game_object(file, child, encyclopedia).dict(),
+        **parse_generic_game_object(file, child, encyclopedia, variant).dict(),
         icon=icon_name(child),
-        tooltips=collect_tooltips(child, encyclopedia),
-        affiliation=affiliation(child),
-        tech_level=text_or_empty(child.find("Tech_Level")),
+        tooltips=collect_tooltips(parser, encyclopedia),
+        affiliation=list(
+            allow_missing(
+                parser.csv, "Affiliation", fallback=cast(tuple[str, ...], tuple())
+            ),
+        ),
+        tech_level=allow_missing(parser.integer, "Tech_Level", fallback=0),
     )
-
-
-def affiliation(child: Element) -> list[str]:
-    affiliation_text = text_or_empty(child.find("Affiliation"))
-    split_affiliation = affiliation_text.split(",")
-    return [
-        affiliation.strip() for affiliation in split_affiliation if affiliation.strip()
-    ]

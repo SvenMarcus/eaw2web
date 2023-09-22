@@ -1,11 +1,11 @@
-from pathlib import Path, PurePath
-from typing import Any, Optional, Protocol, cast
+from pathlib import Path
+from typing import Optional, Protocol
 from xml.etree.ElementTree import Element, ElementTree
 
 from eaw2web.gameobjecttypes import BaseObject
+from eaw2web.gameobjecttypes.variants import VariantsResolver
 from eaw2web.modstack import ModStack
 from eaw2web.text import Encyclopedia
-
 from eaw2web.xml.campaign import parse_campaign
 from eaw2web.xml.faction import parse_faction
 from eaw2web.xml.planet import parse_planet
@@ -14,20 +14,17 @@ from eaw2web.xml.units import parse_unit_object
 
 
 class DataCollector(Protocol):
-    def collect_all(
-        self, files: list[str], encyclopedia: Encyclopedia
-    ) -> list[BaseObject]:
-        ...
-
-    def collect_from(
-        self, filename: str, encyclopedia: Encyclopedia
-    ) -> list[BaseObject]:
+    def collect_all(self, files: list[str]) -> list[BaseObject]:
         ...
 
 
 class GameObjectParser(Protocol):
     def __call__(
-        self, file: Path, child: Element, encyclopedia: Encyclopedia
+        self,
+        file: Path,
+        child: Element,
+        encyclopedia: Encyclopedia,
+        variant: BaseObject | None = None,
     ) -> Optional[BaseObject]:
         pass
 
@@ -47,36 +44,27 @@ def defaultparsers() -> dict[str, GameObjectParser]:
 
 class GameObjectCollector:
     def __init__(
-        self, mod_stack: ModStack, parsers: dict[str, GameObjectParser] | None = None
+        self,
+        mod_stack: ModStack,
+        encyclopedia: Encyclopedia,
+        parsers: dict[str, GameObjectParser] | None = None,
     ) -> None:
         self.mod_stack = mod_stack
         self.parsers = parsers or defaultparsers()
+        self.resolver = VariantsResolver(self.parsers, encyclopedia)
 
-    def collect_from(
-        self, filename: str, encyclopedia: Encyclopedia
-    ) -> list[BaseObject]:
+    def _collect_from(self, filename: str) -> None:
         stack_file = self.mod_stack.find_topmost_xml(filename)
         tree = ElementTree(file=stack_file.full_path())
 
-        def not_none(obj: Any) -> bool:
-            return obj is not None
+        for child in tree.getroot():
+            if child.tag not in self.parsers:
+                continue
 
-        gameobjects = [
-            self.parsers[child.tag](stack_file.from_root(), child, encyclopedia)
-            for child in tree.getroot()
-            if child.tag in self.parsers
-        ]
+            self.resolver.parse(stack_file.from_root(), child)
 
-        return cast(
-            list[BaseObject],
-            list(filter(not_none, gameobjects)),
-        )
+    def collect_all(self, files: list[str]) -> list[BaseObject]:
+        for file in files:
+            self._collect_from(file.replace("\\", "/"))
 
-    def collect_all(
-        self, files: list[str], encyclopedia: Encyclopedia
-    ) -> list[BaseObject]:
-        return [
-            obj
-            for file in files
-            for obj in self.collect_from(file.replace("\\", "/"), encyclopedia)
-        ]
+        return self.resolver.resolve_all()

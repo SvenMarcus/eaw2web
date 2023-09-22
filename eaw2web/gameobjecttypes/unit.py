@@ -3,5 +3,5 @@ from eaw2web.gameobjecttypes.generic import GenericGameObject
 
 
 class Unit(GenericGameObject, WithIcon, WithTooltips):
-    tech_level: str
+    tech_level: int
     affiliation: list[str]

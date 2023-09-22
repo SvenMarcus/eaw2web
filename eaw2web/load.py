@@ -1,11 +1,10 @@
 from eaw2web.config import Config
 from eaw2web.gameobjecttypes import BaseObject
-from eaw2web.text import Encyclopedia
 from eaw2web.xml.collectors import DataCollector
 
 
-def should_include(object: BaseObject, excluded_name_fragments: set[str]) -> bool:
-    return all(fragment not in object.xml_id for fragment in excluded_name_fragments)
+def skip(object: BaseObject, excluded_name_fragments: set[str]) -> bool:
+    return any(fragment in object.xml_id for fragment in excluded_name_fragments)
 
 
 def load(
@@ -13,9 +12,8 @@ def load(
     collector: DataCollector,
     files: list[str],
 ) -> list[BaseObject]:
-    text_dict = Encyclopedia(config.includes.textcsv)
     return [
         obj
-        for obj in collector.collect_all(files, text_dict)
-        if should_include(obj, config.excludes.fragments)
+        for obj in collector.collect_all(files)
+        if not skip(obj, config.excludes.fragments)
     ]

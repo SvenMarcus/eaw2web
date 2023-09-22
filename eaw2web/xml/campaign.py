@@ -12,21 +12,24 @@ from eaw2web.gameobjecttypes import (
     CampaignPlayerSettings,
     StartingForce,
 )
-from eaw2web.text import Encyclopedia, from_csv_line, preserve_newlines, strip_entries
+from eaw2web.text import Encyclopedia, from_csv_line, strip_entries
 from eaw2web.xml.base import parse_base_object
-from eaw2web.xml.text import collect_texts, text_entry_from_tag, text_or_empty
+from eaw2web.xml.tags import TagParser
+from eaw2web.xml.text import collect_texts, text_or_empty
 
 
 def parse_campaign(
-    file: Path, child: Element, encyclopedia: Encyclopedia
+    file: Path,
+    child: Element,
+    encyclopedia: Encyclopedia,
+    variant: BaseObject | None = None,
 ) -> BaseObject:
+    parser = TagParser(child)
     return Campaign(
         **parse_base_object(file, child).dict(),
-        active_player=text_or_empty(child.find("Starting_Active_Player")),
-        textentry=text_entry_from_tag(child.find("Text_ID"), encyclopedia),
-        description=preserve_newlines(
-            text_entry_from_tag(child.find("Description_Text"), encyclopedia)
-        ),
+        active_player=parser.text("Starting_Active_Player"),
+        textentry=encyclopedia.get_text(parser.text("Text_ID")),
+        description=encyclopedia.get_text(parser.text("Description_Text")),
         planets=_parse_locations(child),
         traderoutes=strip_entries(
             from_csv_line(text_or_empty(child.find("Trade_Routes")))
