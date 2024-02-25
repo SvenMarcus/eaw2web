@@ -1,4 +1,4 @@
-from typing import Iterable, Optional
+from typing import Optional
 from xml.etree.ElementTree import Element
 
 from eaw2web.gameobjecttypes import TextEntry

@@ -4,7 +4,6 @@ from typing import NamedTuple
 from xml.etree.ElementTree import Element
 
 from eaw2web.gameobjecttypes import (
-    BaseObject,
     CampaignCameraSettings,
     Campaign,
     CampaignMenuSettings,
@@ -12,6 +11,7 @@ from eaw2web.gameobjecttypes import (
     CampaignPlayerSettings,
     StartingForce,
 )
+from eaw2web.gameobjecttypes.atomics import BaseObject
 from eaw2web.text import Encyclopedia, from_csv_line, strip_entries
 from eaw2web.xml.base import parse_base_object
 from eaw2web.xml.tags import TagParser
@@ -23,10 +23,10 @@ def parse_campaign(
     child: Element,
     encyclopedia: Encyclopedia,
     variant: BaseObject | None = None,
-) -> BaseObject:
+) -> Campaign:
     parser = TagParser(child)
     return Campaign(
-        **parse_base_object(file, child).dict(),
+        **parse_base_object(file, child).model_dump(),
         active_player=parser.text("Starting_Active_Player"),
         textentry=encyclopedia.get_text(parser.text("Text_ID")),
         description=encyclopedia.get_text(parser.text("Description_Text")),

@@ -16,7 +16,7 @@ def parse_faction(
     variant: BaseObject | None = None,
 ) -> Faction:
     return Faction(
-        **(parse_generic_game_object(file, child, encyclopedia, variant).dict()),
+        **(parse_generic_game_object(file, child, encyclopedia, variant).model_dump()),
         icon=icon_name(child),
         is_playable=bool_from_str(text_or_empty(child.find("Is_Playable"))),
     )

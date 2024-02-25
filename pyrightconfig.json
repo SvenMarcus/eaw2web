@@ -1,5 +1,6 @@
 {
   "include": ["eaw2web"],
+  "typeCheckingMode": "strict",
   "venv": ".",
   "venvPath": ".venv"
 }

@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Generic, TypeVar
 from pydantic import BaseModel
 
 
@@ -8,8 +9,11 @@ class BaseObject(BaseModel):
     xml_id: str
 
 
-class VariantType(BaseModel):
-    variant_of: BaseObject | None
+TGameObject = TypeVar("TGameObject", bound=BaseObject)
+
+
+class VariantType(BaseModel, Generic[TGameObject]):
+    variant_of: TGameObject | None
 
 
 class TextEntry(BaseModel):

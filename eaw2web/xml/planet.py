@@ -33,9 +33,8 @@ def parse_planet(
     game_object = parse_generic_game_object(file, child, encyclopedia, variant)
     if not game_object:
         return None
-
     return Planet(
-        **game_object.dict(),
+        **game_object.model_dump(),
         coordinates=parse_coordinates(parser),
         credit_income=allow_missing(parser.integer, "Planet_Credit_Value", fallback=0),
         ability_info=parse_ability_information(parser, encyclopedia),

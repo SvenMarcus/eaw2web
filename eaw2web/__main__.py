@@ -11,6 +11,7 @@ from eaw2web.export import xml, json
 from eaw2web.gameobjecttypes import Campaign, Faction, Planet, TradeRoute, Unit
 from eaw2web.modstack import ModStack
 from eaw2web.pipeline import Pipeline
+from eaw2web.text import Encyclopedia
 from eaw2web.transformers.campaignsets import GalacticConquestSet, transform_to_gc_sets
 from eaw2web.xml.collectors import GameObjectCollector
 
@@ -28,7 +29,8 @@ def export(config_file: Path) -> None:
     progress_bar = Progress()
     reporter = RichProgressReporter(progress_bar)
 
-    collector = reporting_collector(GameObjectCollector(stack), reporter)
+    encyclopedia = Encyclopedia(cfg.includes.textcsv)
+    collector = reporting_collector(GameObjectCollector(stack, encyclopedia), reporter)
     _pipelines = pipelines()
 
     with progress_bar as p:

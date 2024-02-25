@@ -19,7 +19,7 @@ def parse_unit_object(
 ) -> Unit:
     parser = TagParser(child)
     return Unit(
-        **parse_generic_game_object(file, child, encyclopedia, variant).dict(),
+        **parse_generic_game_object(file, child, encyclopedia, variant).model_dump(),
         icon=icon_name(child),
         tooltips=collect_tooltips(parser, encyclopedia),
         affiliation=list(

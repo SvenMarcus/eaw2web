@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Optional, Protocol
+from typing import Protocol
 from xml.etree.ElementTree import Element, ElementTree
 
 from eaw2web.gameobjecttypes import BaseObject
@@ -14,8 +14,7 @@ from eaw2web.xml.units import parse_unit_object
 
 
 class DataCollector(Protocol):
-    def collect_all(self, files: list[str]) -> list[BaseObject]:
-        ...
+    def collect_all(self, files: list[str]) -> list[BaseObject]: ...
 
 
 class GameObjectParser(Protocol):
@@ -25,7 +24,7 @@ class GameObjectParser(Protocol):
         child: Element,
         encyclopedia: Encyclopedia,
         variant: BaseObject | None = None,
-    ) -> Optional[BaseObject]:
+    ) -> BaseObject | None:
         pass
 
 

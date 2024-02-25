@@ -1,11 +1,6 @@
 from pydantic.main import BaseModel
 from eaw2web.gameobjecttypes.generic import GenericGameObject
-from eaw2web.gameobjecttypes.atomics import (
-    TextEntry,
-    WithIcon,
-    WithText,
-    WithTooltips,
-)
+from eaw2web.gameobjecttypes.atomics import TextEntry, WithIcon, WithText, WithTooltips
 
 
 class BuildingSlots(BaseModel):
@@ -30,7 +25,7 @@ class WeatherInformation(WithIcon):
     description: TextEntry
 
 
-class Planet(GenericGameObject, WithTooltips):
+class Planet(GenericGameObject["Planet"], WithTooltips):
     coordinates: tuple[float, float, float]
     credit_income: int
     building_slots: BuildingSlots
