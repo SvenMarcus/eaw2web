@@ -5,7 +5,7 @@ build-backend = "pdm.pep517.api"
 
 [project]
 name = "eaw2web"
-version = "0.3.0"
+version = "0.4.0"
 description = ""
 authors = [
     {name = "Sven Marcus", email = "s.marcus@outlook.de"},
@@ -25,7 +25,7 @@ eaw2web = "eaw2web.__main__:main"
 
 [project.optional-dependencies]
 dev = [
-    "mypy>=1.1.1",
+    "mypy>=1.9.0",
     "black>=23.1.0",
     "ruff>=0.0.254",
     "types-Pillow>=9.4.0.17",
@@ -36,3 +36,5 @@ plugins = "pydantic.mypy"
 
 [tool.mypy-PIL]
 ignore_missing_imports = true
+
+[tool.pdm]
