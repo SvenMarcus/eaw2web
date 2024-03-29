@@ -24,7 +24,9 @@ def parse_unit_object(
         tooltips=collect_tooltips(parser, encyclopedia),
         affiliation=list(
             allow_missing(
-                parser.csv, "Affiliation", fallback=cast(tuple[str, ...], tuple())
+                parser.csv,
+                "Affiliation",
+                fallback=cast(tuple[str, ...], tuple()),
             ),
         ),
         tech_level=allow_missing(parser.integer, "Tech_Level", fallback=0),

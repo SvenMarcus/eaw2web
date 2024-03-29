@@ -14,11 +14,7 @@ def parse_generic_game_object(
     return GenericGameObject(
         **parse_base_object(file, child).model_dump(),
         textentry=encyclopedia.get_text(
-            allow_missing(
-                parser.text,
-                "Text_ID",
-                fallback="",
-            )
+            allow_missing(parser.text, "Text_ID", fallback="")
         ),
         variant_of=variant,
     )

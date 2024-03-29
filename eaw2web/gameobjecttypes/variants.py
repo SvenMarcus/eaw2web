@@ -1,5 +1,4 @@
 import logging
-
 from pathlib import Path
 from typing import TYPE_CHECKING
 from xml.etree.ElementTree import Element
